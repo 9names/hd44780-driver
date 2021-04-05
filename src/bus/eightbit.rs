@@ -1,5 +1,5 @@
 use embedded_hal::blocking::delay::{DelayMs, DelayUs};
-use embedded_hal::digital::v2::OutputPin;
+use embedded_hal::digital::OutputPin;
 
 use crate::{
     bus::DataBus,
@@ -80,51 +80,51 @@ impl<
         let db7: bool = (0b1000_0000 & data) != 0;
 
         if db0 {
-            self.d0.set_high().map_err(|_| Error)?;
+            self.d0.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d0.set_low().map_err(|_| Error)?;
+            self.d0.try_set_low().map_err(|_| Error)?;
         }
 
         if db1 {
-            self.d1.set_high().map_err(|_| Error)?;
+            self.d1.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d1.set_low().map_err(|_| Error)?;
+            self.d1.try_set_low().map_err(|_| Error)?;
         }
 
         if db2 {
-            self.d2.set_high().map_err(|_| Error)?;
+            self.d2.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d2.set_low().map_err(|_| Error)?;
+            self.d2.try_set_low().map_err(|_| Error)?;
         }
 
         if db3 {
-            self.d3.set_high().map_err(|_| Error)?;
+            self.d3.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d3.set_low().map_err(|_| Error)?;
+            self.d3.try_set_low().map_err(|_| Error)?;
         }
 
         if db4 {
-            self.d4.set_high().map_err(|_| Error)?;
+            self.d4.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d4.set_low().map_err(|_| Error)?;
+            self.d4.try_set_low().map_err(|_| Error)?;
         }
 
         if db5 {
-            self.d5.set_high().map_err(|_| Error)?;
+            self.d5.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d5.set_low().map_err(|_| Error)?;
+            self.d5.try_set_low().map_err(|_| Error)?;
         }
 
         if db6 {
-            self.d6.set_high().map_err(|_| Error)?;
+            self.d6.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d6.set_low().map_err(|_| Error)?;
+            self.d6.try_set_low().map_err(|_| Error)?;
         }
 
         if db7 {
-            self.d7.set_high().map_err(|_| Error)?;
+            self.d7.try_set_high().map_err(|_| Error)?;
         } else {
-            self.d7.set_low().map_err(|_| Error)?;
+            self.d7.try_set_low().map_err(|_| Error)?;
         }
 
         Ok(())
@@ -151,19 +151,19 @@ impl<
         delay: &mut D,
     ) -> Result<()> {
         if data {
-            self.rs.set_high().map_err(|_| Error)?;
+            self.rs.try_set_high().map_err(|_| Error)?;
         } else {
-            self.rs.set_low().map_err(|_| Error)?;
+            self.rs.try_set_low().map_err(|_| Error)?;
         }
 
         self.set_bus_bits(byte)?;
 
-        self.en.set_high().map_err(|_| Error)?;
-        delay.delay_ms(2u8);
-        self.en.set_low().map_err(|_| Error)?;
+        self.en.try_set_high().map_err(|_| Error)?;
+        delay.try_delay_ms(2u8).ok();
+        self.en.try_set_low().map_err(|_| Error)?;
 
         if data {
-            self.rs.set_low().map_err(|_| Error)?;
+            self.rs.try_set_low().map_err(|_| Error)?;
         }
 
         Ok(())

@@ -32,9 +32,9 @@ impl<I2C: Write> I2CBus<I2C> {
         };
         let byte = nibble | rs | BACKLIGHT;
 
-        let _ = self.i2c_bus.write(self.address, &[byte, byte | ENABLE]);
-        delay.delay_ms(2u8);
-        let _ = self.i2c_bus.write(self.address, &[byte]);
+        let _ = self.i2c_bus.try_write(self.address, &[byte, byte | ENABLE]);
+        delay.try_delay_ms(2u8).ok();
+        let _ = self.i2c_bus.try_write(self.address, &[byte]);
     }
 }
 

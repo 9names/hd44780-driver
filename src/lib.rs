@@ -8,7 +8,7 @@
 
 use embedded_hal::blocking::delay::{DelayMs, DelayUs};
 use embedded_hal::blocking::i2c;
-use embedded_hal::digital::v2::OutputPin;
+use embedded_hal::digital::OutputPin;
 
 pub mod bus;
 use bus::{DataBus, EightBitBus, FourBitBus, I2CBus};
@@ -392,53 +392,53 @@ where
         self.bus.write(cmd, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
         Ok(())
     }
 
     fn init_4bit<D: DelayUs<u16> + DelayMs<u8>>(&mut self, delay: &mut D) -> Result<()> {
         // Wait for the LCD to wakeup if it was off
-        delay.delay_ms(15u8);
+        delay.try_delay_ms(15u8).ok();
 
         // Initialize Lcd in 4-bit mode
         self.bus.write(0x33, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_ms(5u8);
+        delay.try_delay_ms(5u8).ok();
 
         // Sets 4-bit operation and enables 5x7 mode for chars
         self.bus.write(0x32, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         self.bus.write(0x28, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Clear Display
         self.bus.write(0x0E, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Move the cursor to beginning of first line
         self.bus.write(0x01, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Set entry mode
         self.bus.write(self.entry_mode.as_byte(), false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         self.bus.write(0x80, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         Ok(())
     }
@@ -446,42 +446,42 @@ where
     // Follow the 8-bit setup procedure as specified in the HD44780 datasheet
     fn init_8bit<D: DelayUs<u16> + DelayMs<u8>>(&mut self, delay: &mut D) -> Result<()> {
         // Wait for the LCD to wakeup if it was off
-        delay.delay_ms(15u8);
+        delay.try_delay_ms(15u8).ok();
 
         // Initialize Lcd in 8-bit mode
         self.bus.write(0b0011_0000, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_ms(5u8);
+        delay.try_delay_ms(5u8).ok();
 
         // Sets 8-bit operation and enables 5x7 mode for chars
         self.bus.write(0b0011_1000, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         self.bus.write(0b0000_1110, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Clear Display
         self.bus.write(0b0000_0001, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Move the cursor to beginning of first line
         self.bus.write(0b000_0111, false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         // Set entry mode
         self.bus.write(self.entry_mode.as_byte(), false, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         Ok(())
     }
@@ -540,7 +540,7 @@ where
         self.bus.write(data, true, delay)?;
 
         // Wait for the command to be processed
-        delay.delay_us(100);
+        delay.try_delay_us(100).ok();
 
         Ok(())
     }
@@ -548,7 +548,7 @@ where
     // Pulse the enable pin telling the HD44780 that we something for it
     /*fn pulse_enable(&mut self) {
         self.en.set_high();
-        self.delay.delay_ms(15u8);
+        self.delay.try_delay_ms(15u8);
         self.en.set_low();
     }*/
 }
